@@ -14,9 +14,9 @@ def download():
         # اجرای yt-dlp برای دریافت لینک مستقیم MP4 با بالاترین کیفیت
         command = [
             "yt-dlp",
-            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",  # بهترین ویدیو MP4 + صدا
-            "--merge-output-format", "mp4",  # مطمئن می‌شه خروجی MP4 باشه
-            "--get-url",  # فقط لینک رو می‌گیره
+            "-f", "bv*[ext=mp4][height<=1080]+ba[ext=m4a]/b[ext=mp4][height<=1080]",  # بهترین MP4 تا 1080p
+            "--no-playlist",  # فقط ویدیو اصلی، نه پلی‌لیست
+            "--get-url",  # فقط لینک رو بگیر
             video_url
         ]
         result = subprocess.run(command, capture_output=True, text=True, check=True)

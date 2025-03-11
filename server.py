@@ -2,11 +2,11 @@ import os
 import time
 import json
 import subprocess
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
-SAVE_DIR = "/app/downloads"  # مسیر ذخیره ویدیو
+SAVE_DIR = "/app/downloads"  # مسیر ذخیره ویدیوها
 os.makedirs(SAVE_DIR, exist_ok=True)
 EXPIRATION_TIME = 6 * 60 * 60  # زمان حذف خودکار (6 ساعت)
 
@@ -56,7 +56,7 @@ def download():
         command = ["yt-dlp", "-f", best_format, "-o", filepath, video_url]
         subprocess.run(command, check=True)
 
-        # ایجاد لینک دانلود مستقیم
+        # ایجاد لینک دانلود صحیح
         download_url = f"https://youtube-downloader-production-e01b.up.railway.app/files/{filename}"
 
         return jsonify({
@@ -71,6 +71,11 @@ def download():
         return jsonify({"error": "Failed to fetch video info", "details": str(e)}), 500
     except json.JSONDecodeError:
         return jsonify({"error": "Failed to parse video format info!"}), 500
+
+# 🔥 **مسیر جدید برای ارائه فایل‌های دانلود شده**
+@app.route('/files/<filename>')
+def serve_file(filename):
+    return send_from_directory(SAVE_DIR, filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

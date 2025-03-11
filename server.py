@@ -15,7 +15,7 @@ def download():
         # گرفتن اطلاعات فرمت‌ها با --dump-json
         command = [
             "yt-dlp",
-            "--dump-json",  # اطلاعات رو به‌صورت JSON بده
+            "--dump-json",
             "--no-playlist",
             video_url
         ]
@@ -27,8 +27,8 @@ def download():
         best_height = 0
         for format in video_info["formats"]:
             if (format.get("ext") == "mp4" and 
-                format.get("vcodec") != "none" and  # مطمئن می‌شیم ویدیو داره
-                format.get("acodec") != "none"):    # مطمئن می‌شیم صدا داره
+                format.get("vcodec") != "none" and 
+                format.get("acodec") != "none"):
                 height = format.get("height", 0)
                 if height > best_height:
                     best_height = height
@@ -40,7 +40,7 @@ def download():
         # گرفتن لینک مستقیم برای بهترین فرمت
         command = [
             "yt-dlp",
-            "-f", best_format,  # فقط بهترین فرمت رو بگیر
+            "-f", best_format,
             "--no-playlist",
             "--get-url",
             video_url
@@ -55,7 +55,7 @@ def download():
             "message": "Download link generated successfully",
             "videoUrl": video_url,
             "videoDownloadUrl": video_download_url,
-            "resolution": f"{best_height}p"  # رزولوشن رو هم برگردونیم برای چک کردن
+            "resolution": f"{best_height}p"
         })
 
     except subprocess.CalledProcessError as e:

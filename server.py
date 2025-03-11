@@ -55,7 +55,8 @@ def download():
             "message": "Download link generated successfully",
             "videoUrl": video_url,
             "videoDownloadUrl": video_download_url,
-            "resolution": f"{best_height}p"
+            "resolution": f"{best_height}p",
+            "format_id": best_format  # برای دیباگ اضافه شده
         })
 
     except subprocess.CalledProcessError as e:

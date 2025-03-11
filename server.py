@@ -1,12 +1,25 @@
 import os
-from flask import Flask, request, jsonify, send_file
-import subprocess
+import time
 import json
+import subprocess
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
 SAVE_DIR = "/app/downloads"  # مسیر ذخیره ویدیو
 os.makedirs(SAVE_DIR, exist_ok=True)
+EXPIRATION_TIME = 6 * 60 * 60  # زمان حذف خودکار (6 ساعت)
+
+# تابع حذف فایل‌های قدیمی‌تر از 6 ساعت
+def cleanup_old_files():
+    now = time.time()
+    for filename in os.listdir(SAVE_DIR):
+        filepath = os.path.join(SAVE_DIR, filename)
+        if os.path.isfile(filepath):
+            file_age = now - os.path.getmtime(filepath)
+            if file_age > EXPIRATION_TIME:
+                os.remove(filepath)
+                print(f"🗑️ Deleted old file: {filename}")
 
 @app.route('/download', methods=['GET'])
 def download():
@@ -16,6 +29,9 @@ def download():
         return jsonify({"error": "Missing video URL!"}), 400
 
     try:
+        # حذف فایل‌های قدیمی قبل از دانلود جدید
+        cleanup_old_files()
+
         # دریافت اطلاعات ویدیو
         command = ["yt-dlp", "--dump-json", "--no-playlist", video_url]
         result = subprocess.run(command, capture_output=True, text=True, check=True)
@@ -40,7 +56,7 @@ def download():
         command = ["yt-dlp", "-f", best_format, "-o", filepath, video_url]
         subprocess.run(command, check=True)
 
-        # تولید لینک قابل دانلود در Railway
+        # ایجاد لینک دانلود مستقیم
         download_url = f"https://youtube-downloader-production-e01b.up.railway.app/files/{filename}"
 
         return jsonify({
@@ -55,13 +71,6 @@ def download():
         return jsonify({"error": "Failed to fetch video info", "details": str(e)}), 500
     except json.JSONDecodeError:
         return jsonify({"error": "Failed to parse video format info!"}), 500
-
-@app.route('/files/<filename>', methods=['GET'])
-def serve_file(filename):
-    filepath = os.path.join(SAVE_DIR, filename)
-    if os.path.exists(filepath):
-        return send_file(filepath, as_attachment=True)
-    return jsonify({"error": "File not found!"}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

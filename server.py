@@ -11,19 +11,24 @@ def download():
         return jsonify({"error": "Missing video URL!"}), 400
 
     try:
-        # اجرای yt-dlp برای دریافت لینک مستقیم ویدیو MP4 با بالاترین کیفیت
-        command = ["yt-dlp", "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]", "-g", video_url]
+        # اجرای yt-dlp برای دریافت لینک MP4 نهایی با بهترین کیفیت
+        command = [
+            "yt-dlp",
+            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
+            "--merge-output-format", "mp4",
+            "-g",
+            video_url
+        ]
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        download_urls = result.stdout.strip().split("\n")
+        download_url = result.stdout.strip()
 
-        if len(download_urls) < 2:
+        if not download_url:
             return jsonify({"error": "No direct MP4 link found!"}), 404
 
         return jsonify({
             "message": "Download link generated successfully",
             "videoUrl": video_url,
-            "videoDownloadUrl": download_urls[0],  # لینک مستقیم ویدیو MP4
-            "audioDownloadUrl": download_urls[1]   # لینک مستقیم صدا MP4
+            "videoDownloadUrl": download_url  # لینک مستقیم MP4 یک‌پارچه
         })
 
     except subprocess.CalledProcessError as e:

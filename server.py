@@ -11,8 +11,8 @@ def download():
         return jsonify({"error": "Missing video URL!"}), 400
 
     try:
-        # اجرای yt-dlp برای دریافت لینک مستقیم MP4 با بالاترین کیفیت
-        command = ["yt-dlp", "-f", "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]", "-g", video_url]
+        # اجرای yt-dlp برای دریافت لینک مستقیم ویدیو MP4 با بالاترین کیفیت
+        command = ["yt-dlp", "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]", "-g", video_url]
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         download_urls = result.stdout.strip().split("\n")
 

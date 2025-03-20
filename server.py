@@ -62,6 +62,7 @@ def download():
         output_path = os.path.join(SAVE_DIR, "%(id)s.%(ext)s")
         command = [
             "yt-dlp",
+            "--cookies", "cookies.txt",  # اضافه کردن cookies.txt
             "-f", best_format,
             "--no-playlist",
             "-o", output_path,

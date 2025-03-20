@@ -10,6 +10,15 @@ app = Flask(__name__)
 SAVE_DIR = "/app/downloads"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
+# مسیر فایل cookies.txt
+COOKIES_FILE = "/app/cookies.txt"
+
+# چک کردن اینکه فایل cookies.txt وجود دارد یا نه
+if os.path.exists(COOKIES_FILE):
+    print("✅ cookies.txt found in:", COOKIES_FILE)
+else:
+    print("❌ ERROR: cookies.txt NOT FOUND in /app/")
+    
 # **تابع حذف فایل‌های قدیمی‌تر از 6 ساعت**
 def cleanup_old_files():
     now = time.time()
@@ -62,7 +71,7 @@ def download():
         output_path = os.path.join(SAVE_DIR, "%(id)s.%(ext)s")
         command = [
             "yt-dlp",
-            "--cookies", "cookies.txt",  # اضافه کردن cookies.txt
+            "--cookies", COOKIES_FILE,  # اضافه کردن cookies.txt
             "-f", best_format,
             "--no-playlist",
             "-o", output_path,

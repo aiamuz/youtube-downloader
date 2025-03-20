@@ -77,6 +77,15 @@ def download():
             "-o", output_path,
             video_url
         ]
+        # نمایش دستور yt-dlp در لاگ‌ها برای بررسی
+        print("Executing yt-dlp command:", " ".join(command))
+
+        result = subprocess.run(command, capture_output=True, text=True)
+
+        # نمایش خروجی و خطای yt-dlp در لاگ‌ها
+        print("yt-dlp output:", result.stdout)
+        print("yt-dlp error:", result.stderr)
+
         subprocess.run(command, check=True)
 
         # پیدا کردن نام فایل دانلود شده

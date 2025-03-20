@@ -38,6 +38,9 @@ def download():
         ]
         print("Executing command:", " ".join(command))  # این دستور رو در لاگ‌ها نمایش بده
         result = subprocess.run(command, capture_output=True, text=True, check=True)
+        print("yt-dlp output:", result.stdout)  # خروجی yt-dlp رو نمایش بده
+print("yt-dlp error:", result.stderr)  # خطاهای yt-dlp رو نمایش بده
+
         video_info = json.loads(result.stdout)
 
         # پیدا کردن بهترین فرمت MP4 با ویدیو و صدا

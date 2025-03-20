@@ -36,6 +36,7 @@ def download():
             "--no-playlist",
             video_url
         ]
+        print("Executing command:", " ".join(command))  # این دستور رو در لاگ‌ها نمایش بده
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         video_info = json.loads(result.stdout)
 

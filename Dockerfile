@@ -15,4 +15,6 @@ RUN mkdir -p /app/downloads
 # اطمینان از داشتن مجوز برای ذخیره فایل‌ها
 RUN chmod -R 777 /app/downloads
 
+COPY cookies.txt /app/cookies.txt
+
 CMD ["bash", "start.sh"]
